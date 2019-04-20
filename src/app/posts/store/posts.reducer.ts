@@ -1,4 +1,3 @@
-import {createFeatureSelector, createSelector} from "@ngrx/store";
 import {PostActions, PostsActionTypes} from "./posts.actions";
 import {Post} from "../post.model";
 
@@ -25,6 +24,3 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
         }
     }
 }
-
-export const getPostsState = createFeatureSelector<PostsState>('posts');
-export const getPosts = createSelector(getPostsState, (state: PostsState) => state.posts);

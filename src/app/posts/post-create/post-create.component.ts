@@ -1,7 +1,10 @@
 import {Component, OnInit} from '@angular/core';
+import {NgForm} from "@angular/forms";
 import {Store} from "@ngrx/store";
-import * as fromPosts from '../store/posts.reducer';
+
+import * as fromApp from '../../store/app.reducers';
 import {AddPost} from "../store/posts.actions";
+import {Post} from "../post.model";
 
 @Component({
     selector: 'app-post-create',
@@ -9,22 +12,20 @@ import {AddPost} from "../store/posts.actions";
     styleUrls: ['./post-create.component.css']
 })
 export class PostCreateComponent implements OnInit {
-    postTitle: string = '';
-    postContent: string = '';
 
-    constructor(private store: Store<fromPosts.PostsState>) {
+    constructor(private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit() {
     }
 
-    onSavePost() {
-        const post = {
-            title: this.postTitle,
-            content: this.postContent
+    onSavePost(form: NgForm) {
+        const post: Post = {
+            title: form.value.postTitle,
+            content: form.value.postContent,
+            timeCreated: Date.now()
         };
         this.store.dispatch(new AddPost(post));
-        this.postTitle = '';
-        this.postContent = '';
+        form.reset();
     }
 }

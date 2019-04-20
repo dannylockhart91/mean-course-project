@@ -10,7 +10,7 @@ import {PostsComponent} from './posts/posts.component';
 import {PostCreateComponent} from './posts/post-create/post-create.component';
 import {HeaderComponent} from "./header/header.component";
 import {PostListComponent} from "./posts/post-list/post-list.component";
-import {PostsReducer} from "./posts/store/posts.reducer";
+import {reducers} from "./store/app.reducers";
 
 @NgModule({
     declarations: [
@@ -25,7 +25,7 @@ import {PostsReducer} from "./posts/store/posts.reducer";
         FormsModule,
         BrowserAnimationsModule,
         MaterialModule,
-        StoreModule.forRoot({posts: PostsReducer})
+        StoreModule.forRoot(reducers)
     ],
     providers: [],
     bootstrap: [AppComponent]

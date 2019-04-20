@@ -1,8 +1,8 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {select, Store} from "@ngrx/store";
 import {Observable} from "rxjs";
 
-import * as fromPosts from '../store/posts.reducer';
-import {select, Store} from "@ngrx/store";
+import * as fromApp from '../../store/app.reducers';
 import {Post} from "../post.model";
 
 @Component({
@@ -10,10 +10,13 @@ import {Post} from "../post.model";
     templateUrl: './post-list.component.html',
     styleUrls: ['./post-list.component.css']
 })
-export class PostListComponent {
+export class PostListComponent implements OnInit {
     posts$: Observable<Post[]>;
 
-    constructor(private store: Store<fromPosts.PostsState>){
-        this.posts$ = this.store.pipe(select(fromPosts.getPosts))
+    constructor(private store: Store<fromApp.AppState>){
+    }
+
+    ngOnInit(): void {
+        this.posts$ = this.store.pipe(select(fromApp.getPosts));
     }
 }
