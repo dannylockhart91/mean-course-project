@@ -17,6 +17,14 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
                 posts: [...state.posts, action.payload]
             }
         }
+        case PostsActionTypes.SetPosts: {
+            if(typeof action.payload !== 'undefined') {
+                return {
+                    ...state,
+                    posts: action.payload
+                }
+            }
+        }
         default: {
             return {
                 ...state

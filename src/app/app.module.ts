@@ -11,6 +11,10 @@ import {PostCreateComponent} from './posts/post-create/post-create.component';
 import {HeaderComponent} from "./header/header.component";
 import {PostListComponent} from "./posts/post-list/post-list.component";
 import {reducers} from "./store/app.reducers";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {EffectsModule} from "@ngrx/effects";
+import {PostsEffects} from "./posts/store/posts.effects";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
     declarations: [
@@ -24,8 +28,11 @@ import {reducers} from "./store/app.reducers";
         BrowserModule,
         FormsModule,
         BrowserAnimationsModule,
+        FlexLayoutModule,
         MaterialModule,
-        StoreModule.forRoot(reducers)
+        HttpClientModule,
+        StoreModule.forRoot(reducers),
+        EffectsModule.forRoot([PostsEffects])
     ],
     providers: [],
     bootstrap: [AppComponent]

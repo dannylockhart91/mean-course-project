@@ -21,11 +21,13 @@ export class PostCreateComponent implements OnInit {
 
     onSavePost(form: NgForm) {
         const post: Post = {
+            id: null,
             title: form.value.postTitle,
             content: form.value.postContent,
             timeCreated: Date.now()
         };
         this.store.dispatch(new AddPost(post));
-        form.reset();
+        // resetForm() NOT reset()
+        form.resetForm();
     }
 }

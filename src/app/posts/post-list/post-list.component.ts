@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 
 import * as fromApp from '../../store/app.reducers';
 import {Post} from "../post.model";
+import {DeletePost} from "../store/posts.actions";
 
 @Component({
     selector: 'app-post-list',
@@ -18,5 +19,12 @@ export class PostListComponent implements OnInit {
 
     ngOnInit(): void {
         this.posts$ = this.store.pipe(select(fromApp.getPosts));
+    }
+
+    onEditPost(post: Post){
+    }
+
+    onDeletePost(post: Post){
+        this.store.dispatch(new DeletePost(post));
     }
 }

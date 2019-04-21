@@ -3,8 +3,18 @@
         <mat-expansion-panel-header>
             {{post.title}}
         </mat-expansion-panel-header>
-        <p>{{post.content}}</p>
-        <p>{{post.timeCreated | date}}</p>
+            <p>{{post.content}}</p>
+        <mat-action-row fxLayoutAlign="space-between center">
+            <p>Posted On: <strong>{{post.timeCreated | date :'d/M/yy h:mm a'}}</strong></p>
+            <div>
+                <button mat-icon-button>
+                    <mat-icon color="primary" matTooltip="Edit Post" (click)="onDeletePost(post)">create</mat-icon>
+                </button>
+                <button mat-icon-button>
+                    <mat-icon color="warn" matTooltip="Delete Post" (click)="onEditPost(post)">delete</mat-icon>
+                </button>
+            </div>
+        </mat-action-row>
     </mat-expansion-panel>
 </mat-accordion>
 <p *ngIf="!(posts$ | async).length > 0">No Posts Available</p>
