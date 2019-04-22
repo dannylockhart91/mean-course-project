@@ -4,7 +4,8 @@ import {Observable} from "rxjs";
 
 import * as fromApp from '../../store/app.reducers';
 import {Post} from "../post.model";
-import {DeletePost} from "../store/posts.actions";
+import {DeletePost, SetEditingPost} from "../store/posts.actions";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-post-list',
@@ -14,7 +15,7 @@ import {DeletePost} from "../store/posts.actions";
 export class PostListComponent implements OnInit {
     posts$: Observable<Post[]>;
 
-    constructor(private store: Store<fromApp.AppState>){
+    constructor(private router: Router, private store: Store<fromApp.AppState>){
     }
 
     ngOnInit(): void {
@@ -22,9 +23,10 @@ export class PostListComponent implements OnInit {
     }
 
     onEditPost(post: Post){
+        this.store.dispatch(new SetEditingPost(post));
     }
 
     onDeletePost(post: Post){
-        this.store.dispatch(new DeletePost(post));
+        this.store.dispatch(new DeletePost(post.id));
     }
 }

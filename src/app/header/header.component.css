@@ -1,0 +1,6 @@
+mat-nav-list a,
+a {
+    color: inherit;
+    list-style: none;
+    text-decoration: none;
+}

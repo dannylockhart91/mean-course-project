@@ -1,1 +1,6 @@
-<mat-toolbar color="primary">MyMessages</mat-toolbar>
+<mat-toolbar color="primary" fxLayoutAlign="space-between center">
+    <span><a routerLink="/">MyMessages</a></span>
+    <mat-nav-list fxLayout="row">
+        <a mat-list-item routerLink="createPost">New Post</a>
+    </mat-nav-list>
+</mat-toolbar>

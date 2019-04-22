@@ -1,6 +1,7 @@
 export interface Post {
-    id: number,
+    id: string,
     title: string;
     content: string;
     timeCreated: number;
+    updated: number;
 }

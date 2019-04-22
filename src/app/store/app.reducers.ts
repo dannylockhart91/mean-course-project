@@ -14,3 +14,4 @@ export const reducers: ActionReducerMap<AppState> = {
 export const getPostsState = createFeatureSelector<PostsState>('posts');
 
 export const getPosts = createSelector(getPostsState, (state: PostsState) => state.posts);
+export const getCurrentEditingPost = createSelector(getPostsState, (state: PostsState) => state.currentEditingPost);
