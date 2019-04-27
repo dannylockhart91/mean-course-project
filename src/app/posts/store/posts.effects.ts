@@ -1,21 +1,23 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
-import {Action} from "@ngrx/store";
+import {Action, Store} from "@ngrx/store";
 import {Actions, Effect, ofType, OnInitEffects} from "@ngrx/effects";
 import {catchError, map, switchMap, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 import {
+    AddPostFailed,
     AddPostRequest,
     AddPostSuccess,
     DeletePost,
     FetchPosts,
-    PostsActionTypes,
+    PostsActionTypes, SetIsLoading,
     SetPosts, UpdatePostFailed,
     UpdatePostRequest, UpdatePostSuccess
 } from "./posts.actions";
 import {Post} from "../post.model";
+import * as fromApp from "../../store/app.reducers";
 
 @Injectable()
 export class PostsEffects implements OnInitEffects {
@@ -24,6 +26,7 @@ export class PostsEffects implements OnInitEffects {
     addPostRequest$ = this.actions$.pipe(
         ofType<AddPostRequest>(PostsActionTypes.AddPostRequest),
         map((action: AddPostRequest) => {
+            this.store.dispatch(new SetIsLoading(true));
             return action.payload
         }),
         switchMap((data: Post) => {
@@ -43,10 +46,11 @@ export class PostsEffects implements OnInitEffects {
                     timeCreated: data.post.timeCreated,
                     updated: null
                 };
+                console.log('Post Added');
                 return new AddPostSuccess(post);
             } else {
                 console.log('Error Adding Post');
-                return null
+                return new AddPostFailed();
             }
         })
     );
@@ -55,6 +59,7 @@ export class PostsEffects implements OnInitEffects {
     updatePostRequest$ = this.actions$.pipe(
         ofType<UpdatePostRequest>(PostsActionTypes.UpdatePostRequest),
         map((action: UpdatePostRequest) => {
+            this.store.dispatch(new SetIsLoading(true));
             return action.payload
         }),
         switchMap((post: Post) => {
@@ -102,6 +107,9 @@ export class PostsEffects implements OnInitEffects {
     @Effect()
     fetchPosts$ = this.actions$.pipe(
         ofType<FetchPosts>(PostsActionTypes.FetchPosts),
+        tap(() => {
+           this.store.dispatch(new SetIsLoading(true));
+        }),
         switchMap(() => {
             return this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts').pipe(
                 catchError((err) => {
@@ -138,6 +146,6 @@ export class PostsEffects implements OnInitEffects {
         return new FetchPosts();
     }
 
-    constructor(private actions$: Actions, private http: HttpClient) {
+    constructor(private actions$: Actions, private http: HttpClient, private store: Store<fromApp.AppState>) {
     }
 }

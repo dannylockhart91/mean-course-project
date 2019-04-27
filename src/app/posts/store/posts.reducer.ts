@@ -4,11 +4,13 @@ import {Post} from "../post.model";
 export interface PostsState {
     posts: Post[],
     currentEditingPost: Post,
+    isLoading: boolean
 }
 
 export const initialState: PostsState = {
     posts: [],
-    currentEditingPost: null
+    currentEditingPost: null,
+    isLoading: false
 };
 
 export function PostsReducer(state: PostsState = initialState, action: PostActions): PostsState {
@@ -16,6 +18,7 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
         case PostsActionTypes.AddPostSuccess: {
             return {
                 ...state,
+                isLoading: false,
                 posts: [...state.posts, action.payload]
             }
         }
@@ -32,11 +35,13 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
              newPosts.splice(index, 1, action.payload);
              return {
                  ...state,
+                 isLoading: false,
                  posts: newPosts
              }
             } else {
                 return {
-                    ...state
+                    ...state,
+                    isLoading: false
                 }
             }
         }
@@ -60,12 +65,19 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
             if (typeof action.payload !== 'undefined' && action.payload.length > 0) {
                 return {
                     ...state,
+                    isLoading: false,
                     posts: action.payload
                 }
             } else {
                 return {
                     ...state
                 }
+            }
+        }
+        case PostsActionTypes.SetIsLoading: {
+            return {
+                ...state,
+                isLoading: action.payload
             }
         }
         default: {

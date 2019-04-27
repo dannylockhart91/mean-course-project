@@ -2,25 +2,36 @@
     <button mat-raised-button color="primary" [routerLink]="'createPost'">Create New Post</button>
 </div>
 
-<mat-accordion multi="true" *ngIf="posts$ | async">
-    <mat-expansion-panel *ngFor="let post of (posts$ | async)">
-        <mat-expansion-panel-header>
-            {{post.title}}
-        </mat-expansion-panel-header>
+<div fxLayoutAlign="center center" *ngIf="!(isLoading$ | async)">
+    <mat-accordion multi="false" *ngIf="(posts$ | async)">
+        <mat-expansion-panel *ngFor="let post of (posts$ | async)">
+            <mat-expansion-panel-header>
+                {{post.title}}
+            </mat-expansion-panel-header>
             <p>{{post.content}}</p>
-        <mat-action-row fxLayoutAlign="space-between center">
-            <p>Posted On: <strong>{{post.timeCreated | date: 'd/M/yy h:mm a'}}</strong></p>
-            <p *ngIf="post.updated !== null">Updated On: <strong>{{post.updated | date: 'd/M/yy h:mm a'}}</strong></p>
-            <div>
-                <button mat-icon-button>
-                    <mat-icon color="primary" matTooltip="Edit Post" routerLink="/edit/{{post.id}}" (click)="onEditPost(post)">create</mat-icon>
-                </button>
-                <button mat-icon-button>
-                    <mat-icon color="warn" matTooltip="Delete Post" (click)="onDeletePost(post)">delete</mat-icon>
-                </button>
-            </div>
-        </mat-action-row>
-    </mat-expansion-panel>
-</mat-accordion>
-<p *ngIf="(posts$ | async).length <= 0">No Posts Available</p>
+            <mat-action-row fxLayoutAlign="space-between center">
+                <p>Posted On: <strong>{{post.timeCreated | date: 'd/M/yy h:mm a'}}</strong></p>
+                <p *ngIf="post.updated !== null">Updated On: <strong>{{post.updated | date: 'd/M/yy h:mm a'}}</strong>
+                </p>
+                <div>
+                    <button mat-icon-button>
+                        <mat-icon color="primary" matTooltip="Edit Post" routerLink="/edit/{{post.id}}"
+                                  (click)="onEditPost(post)">create
+                        </mat-icon>
+                    </button>
+                    <button mat-icon-button>
+                        <mat-icon color="warn" matTooltip="Delete Post" (click)="onDeletePost(post)">delete</mat-icon>
+                    </button>
+                </div>
+            </mat-action-row>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
+<div *ngIf="isLoading$ | async" fxLayoutAlign="center">
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="(posts$ | async).length <= 0" class="no-post-available" fxLayoutAlign="center center" fxLayout="column">
+    <hr>
+    <p>No Posts Available</p>
+</div>
 

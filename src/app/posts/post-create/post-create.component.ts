@@ -5,7 +5,7 @@ import {select, Store} from "@ngrx/store";
 import * as fromApp from '../../store/app.reducers';
 import {AddPostRequest, SetEditingPost, UpdatePostRequest} from "../store/posts.actions";
 import {Post} from "../post.model";
-import {ActivatedRoute, ParamMap} from "@angular/router";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -17,7 +17,7 @@ export class PostCreateComponent implements OnInit, OnDestroy {
     isEditing$: Subscription;
     editingPost: Post = null;
 
-    constructor(private route: ActivatedRoute, private store: Store<fromApp.AppState>) {
+    constructor(private router: Router, private route: ActivatedRoute, private store: Store<fromApp.AppState>) {
     }
 
     ngOnInit() {
@@ -56,6 +56,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
         }
         // resetForm() NOT reset()
         form.resetForm();
+        this.router.navigateByUrl('/', {relativeTo: this.route})
+            .then();
     }
 
     ngOnDestroy(): void {

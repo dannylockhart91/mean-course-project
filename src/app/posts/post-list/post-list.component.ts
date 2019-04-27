@@ -4,7 +4,7 @@ import {Observable} from "rxjs";
 
 import * as fromApp from '../../store/app.reducers';
 import {Post} from "../post.model";
-import {DeletePost, SetEditingPost} from "../store/posts.actions";
+import {DeletePost, SetEditingPost, SetIsLoading} from "../store/posts.actions";
 import {Router} from "@angular/router";
 
 @Component({
@@ -14,12 +14,14 @@ import {Router} from "@angular/router";
 })
 export class PostListComponent implements OnInit {
     posts$: Observable<Post[]>;
+    isLoading$: Observable<boolean>;
 
     constructor(private router: Router, private store: Store<fromApp.AppState>){
     }
 
     ngOnInit(): void {
         this.posts$ = this.store.pipe(select(fromApp.getPosts));
+        this.isLoading$ = this.store.pipe(select(fromApp.getIsLoading));
     }
 
     onEditPost(post: Post){
