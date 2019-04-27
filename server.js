@@ -9,7 +9,7 @@ const app = require("./backend/app");
 
 // Function to make sure that the port we receive for setting
 // this server up is valid
-const normalizePort = val => {
+const normalizePort = (val) => {
     let port = parseInt(val, 10);
 
     if (isNaN(port)) {

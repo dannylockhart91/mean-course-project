@@ -1,7 +1,5 @@
 // Holds EXPRESS app
 const express = require('express');
-// Holds ability to parse request body (attached data)
-const bodyParser = require('body-parser');
 // Holds connection to database (MongoDB)
 const mongoose = require('mongoose');
 
@@ -24,8 +22,8 @@ mongoose.connect('mongodb+srv://danny:7Fq8YvA2PntcSCss@cluster0-sls8z.mongodb.ne
 
 // Use to add a body parser to the express app. This extracts body data from
 // incoming requests
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.user(express.json());
+app.use(express.urlencoded());
 
 
 //IMPORTANT: Prevent CORS (Cross-Origin Resource Sharing) error - Allow cross server communication
@@ -77,7 +75,7 @@ app.patch('/api/posts/:id', (req, res, next) => {
    PostModel.updateOne({_id: req.params.id}, req.body)
        .then((result) => {
            console.log(result);
-           res.status(200).json({
+           res.sendStatus(200).json({
                message: 'Update Successful',
                post: req.body
            })
@@ -88,7 +86,7 @@ app.delete('/api/posts/:id', (req, res, next) => {
     PostModel.deleteOne({_id: req.params.id})
         .then((result) => {
             console.log(result);
-            res.status(200).json({
+            res.sendStatus(200).json({
                 message: 'Post Deleted'
             });
         });

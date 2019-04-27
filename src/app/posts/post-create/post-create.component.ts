@@ -14,8 +14,8 @@ import {Subscription} from "rxjs";
     styleUrls: ['./post-create.component.css']
 })
 export class PostCreateComponent implements OnInit, OnDestroy {
-    private isEditing$: Subscription;
-    private editingPost: Post = null;
+    isEditing$: Subscription;
+    editingPost: Post = null;
 
     constructor(private route: ActivatedRoute, private store: Store<fromApp.AppState>) {
     }

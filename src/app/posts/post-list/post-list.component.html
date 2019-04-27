@@ -22,5 +22,5 @@
         </mat-action-row>
     </mat-expansion-panel>
 </mat-accordion>
-<p *ngIf="!(posts$ | async).length > 0">No Posts Available</p>
+<p *ngIf="(posts$ | async).length <= 0">No Posts Available</p>
 
