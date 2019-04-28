@@ -1,12 +1,10 @@
-// Holds EXPRESS app
-const express = require('express');
-// mongoose is a helper package for working with MongoDB
-const mongoose = require('mongoose');
-// Holds connection to router(for routes)
-const postRoutes = require('./routes/posts');
+const express = require('express'); // Holds EXPRESS app
+const path = require('path'); // Allows construction of paths
+const mongoose = require('mongoose'); // mongoose is a helper package for working with MongoDB
+const postRoutes = require('./routes/posts'); // Holds connection to router(for routes)
 
-// returns the express app by executing the express function
-const app = express();
+const app = express(); // returns the express app by executing the express function
+
 // Create connection to database
 //IMPORTANT: MongoDB: danny - 7Fq8YvA2PntcSCss
 mongoose.connect('mongodb+srv://danny:7Fq8YvA2PntcSCss@cluster0-sls8z.mongodb.net/node-angular?retryWrites=true\n', {useNewUrlParser: true})
@@ -20,11 +18,10 @@ mongoose.connect('mongodb+srv://danny:7Fq8YvA2PntcSCss@cluster0-sls8z.mongodb.ne
 // These act as 'middleware', a series of actions that act upon a request before
 // calling 'next' to let the request continue it's journey
 
-// Use to add a body parser to the express app. This extracts body data from
-// incoming requests
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
+app.use('/images', express.static(path.join('backend/images'))); // grant access to images folder
 
 //IMPORTANT: Prevent CORS (Cross-Origin Resource Sharing) error - Allow cross server communication
 app.use((req, res, next) => {
@@ -40,8 +37,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Make sure express uses the routes in the routes folder/file
-app.use('/api/posts', postRoutes);
+app.use('/api/posts', postRoutes); // Make sure express uses the routes in the routes folder/file
 
 // Export the app to be able to use it with our node server
 // including all the middleware we write

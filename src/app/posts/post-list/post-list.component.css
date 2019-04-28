@@ -12,6 +12,14 @@ mat-accordion {
     width: 100%;
 }
 
+.post-content {
+    width: 100%;
+}
+.post-content img {
+    border-radius: 6px;
+    box-shadow: 4px 4px 5px rgba(0,0,0,0.5);
+    width: 100%
+}
 .no-post-available hr {
     color: black;
     width: 95%;

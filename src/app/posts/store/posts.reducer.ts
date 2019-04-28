@@ -23,21 +23,22 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
             }
         }
         case PostsActionTypes.UpdatePostSuccess: {
+            console.log(action.payload);
             let oldPost;
             state.posts.forEach((post) => {
-                if(post.id === action.payload.id) {
+                if (post.id === action.payload.id) {
                     oldPost = post;
                 }
             });
-            if(oldPost) {
-             let index = state.posts.indexOf(oldPost);
-             let newPosts = [...state.posts];
-             newPosts.splice(index, 1, action.payload);
-             return {
-                 ...state,
-                 isLoading: false,
-                 posts: newPosts
-             }
+            if (oldPost) {
+                let index = state.posts.indexOf(oldPost);
+                let newPosts = [...state.posts];
+                newPosts.splice(index, 1, action.payload);
+                return {
+                    ...state,
+                    isLoading: false,
+                    posts: newPosts
+                }
             } else {
                 return {
                     ...state,
@@ -70,7 +71,8 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
                 }
             } else {
                 return {
-                    ...state
+                    ...state,
+                    isLoading: false
                 }
             }
         }

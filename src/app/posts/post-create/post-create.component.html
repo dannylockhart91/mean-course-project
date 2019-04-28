@@ -1,38 +1,53 @@
 <mat-card>
-    <form (ngSubmit)="onSavePost(postForm)" #postForm="ngForm">
+    <form [formGroup]="form" (submit)="onSavePost()">
         <mat-form-field>
             <label>
-            <input
-                matInput
-                type="text"
-                name="postTitle"
-                [ngModel]="editingPost ? editingPost.title : ''"
-                #title="ngModel"
-                required
-                minlength="3"
-                placeholder="Post Title">
-            <mat-error *ngIf="title.touched && !title.valid">Please enter a valid title</mat-error>
+                <input
+                    matInput
+                    type="text"
+                    formControlName="postTitle"
+                    placeholder="Post Title">
             </label>
+            <mat-error *ngIf="form.get('postTitle').invalid">Please enter a post title</mat-error>
         </mat-form-field>
-        <mat-form-field>
-            <label>
+            <mat-form-field>
+                <label>
                 <textarea
                     matInput
                     rows="6"
-                    name="postContent"
-                    [ngModel]="editingPost ? editingPost.content : ''"
-                    #content="ngModel"
-                    required
+                    formControlName="postContent"
                     placeholder="Post Content"></textarea>
-                <mat-error *ngIf="content.touched && !content.valid">Please enter some content</mat-error>
-            </label>
-        </mat-form-field>
-        <button
-            mat-raised-button
-            color="accent"
-            type="submit"
-            [disabled]="!postForm.valid">
-            Save Post
-        </button>
+                </label>
+                <mat-error *ngIf="form.get('postContent').invalid">Please enter content for the post</mat-error>
+            </mat-form-field>
+            <div class="image-preview" fxLayoutAlign="center center"
+                 *ngIf="imagePreview !== '' && imagePreview && form.get('postImage').valid else imagePreviewError">
+                <img [src]="imagePreview" [alt]="'Image'">
+            </div>
+        <ng-template #imagePreviewError>
+            <div class="image-required">
+                Image Required
+            </div>
+        </ng-template>
+        <div fxLayoutAlign="space-between center" class="post-form-buttons">
+            <button
+                mat-raised-button
+                color="accent"
+                type="submit"
+                [disabled]="form.invalid">
+                Save Post
+            </button>
+            <div class="file-upload" fxLayout="space-evenly center">
+                <input type="file" #filePicker (change)="onImageSelected($event)">
+                <button
+                    mat-raised-button
+                    color="accent"
+                    type="button"
+                    (click)="filePicker.click()">
+                    <mat-icon>vertical_align_top</mat-icon>
+                    Upload Image
+                </button>
+            </div>
+        </div>
     </form>
 </mat-card>

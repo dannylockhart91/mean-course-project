@@ -1,14 +1,38 @@
 const express = require('express');
+const multer = require('multer'); //Package used for extracting files from requests
 const PostModel = require('../models/post');
 
 const router = express.Router();
 
-router.post('', (req, res, next) => {
+const MIME_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg'
+};
+const storage = multer.diskStorage({
+    destination: (req, file, cbFunction) => {
+        const isValid = MIME_TYPE_MAP[file.mimetype];
+        let error = new Error('Invalid mimeType');
+        if (isValid) {
+            error = null;
+        }
+        cbFunction(error, 'backend/images');
+    },
+    filename: (req, file, cbFunction) => {
+        const name = file.originalname.toLowerCase().split(' ').join('-');
+        const ext = MIME_TYPE_MAP[file.mimetype];
+        cbFunction(null, name + '-' + Date.now() + '.' + ext)
+    }
+});
+
+router.post('', multer({storage: storage}).single('image'), (req, res, next) => {
+    const url = req.protocol + '://' + req.get('host');
     const post = new PostModel({
         title: req.body.title,
         content: req.body.content,
-        timeCreated: Date.now(),
-        updated: req.body.updated
+        timeCreated: parseInt(req.body.timeCreated),
+        updated: parseInt(req.body.updated),
+        imagePath: url + '/images/' + req.file.filename
     });
     post.save().then((result) => {
         res.status(201).json({
@@ -29,16 +53,31 @@ router.get('', (req, res, next) => {
         });
 });
 
-router.patch('/:id', (req, res, next) => {
-    PostModel.updateOne({_id: req.params.id}, req.body)
-        .then((result) => {
-            console.log(result);
+router.patch('/:id', multer({storage: storage}).single('image'), (req, res, next) => {
+    let imagePath = req.body.imagePath;
+    if (req.file) {
+        const url = req.protocol + '://' + req.get('host');
+        imagePath = url + '/images/' + req.file.filename;
+    }
+    const post = new PostModel({
+        ...req.body,
+        imagePath: imagePath
+    });
+    PostModel.updateOne({_id: req.params.id}, post)
+        .then(() => {
+            const newPost = {
+                id: post._id,
+                title: post.title,
+                content: post.content,
+                timeCreated: post.timeCreated,
+                updated: post.updated,
+                imagePath: post.imagePath
+            };
             res.status(200).json({
                 message: 'Update Successful',
-                post: req.body
+                post: newPost
             })
         })
-        .catch()
 });
 
 router.delete('/:id', (req, res, next) => {

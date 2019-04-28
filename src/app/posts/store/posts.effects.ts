@@ -29,8 +29,14 @@ export class PostsEffects implements OnInitEffects {
             this.store.dispatch(new SetIsLoading(true));
             return action.payload
         }),
-        switchMap((data: Post) => {
-            return this.http.post<{ message: string , post: Post}>('http://localhost:3000/api/posts', data).pipe(
+        switchMap((data: { post: Post, image: File }) => {
+            const postData = new FormData();
+            postData.append('title', data.post.title);
+            postData.append('content', data.post.content);
+            postData.append('timeCreated', data.post.timeCreated.toString());
+            postData.append('updated', (data.post.updated | -1).toString());
+            postData.append('image', data.image, data.post.title);
+            return this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData).pipe(
                 catchError((err) => {
                     console.log(err);
                     return of({message: '', post: null})
@@ -39,12 +45,13 @@ export class PostsEffects implements OnInitEffects {
         }),
         map((data: { message: string, post: any }) => {
             if (data.post !== null) {
-                const post = {
+                const post: Post = {
                     id: data.post._id,
                     title: data.post.title,
                     content: data.post.content,
                     timeCreated: data.post.timeCreated,
-                    updated: null
+                    updated: null,
+                    imagePath: data.post.imagePath
                 };
                 console.log('Post Added');
                 return new AddPostSuccess(post);
@@ -62,16 +69,35 @@ export class PostsEffects implements OnInitEffects {
             this.store.dispatch(new SetIsLoading(true));
             return action.payload
         }),
-        switchMap((post: Post) => {
-            return this.http.patch<{message: string, post: Post}>('http://localhost:3000/api/posts/' + post.id, post).pipe(
+        switchMap((data: { post: any, image: File | string }) => {
+            let postData: Post | FormData | any;
+            if (typeof data.image === 'object') {
+                postData = new FormData();
+                postData.append('_id', data.post.id);
+                postData.append('title', data.post.title);
+                postData.append('content', data.post.content);
+                postData.append('timeCreated', data.post.timeCreated.toString());
+                postData.append('updated', (data.post.updated || -1).toString());
+                postData.append('image', data.image, data.post.title);
+            } else {
+                postData = {
+                    _id: data.post.id,
+                    title: data.post.title,
+                    content: data.post.content,
+                    timeCreated: data.post.timeCreated,
+                    updated: data.post.updated,
+                    imagePath: data.image
+                };
+            }
+            return this.http.patch<{ message: string, post: Post }>('http://localhost:3000/api/posts/' + data.post.id, postData).pipe(
                 catchError((err) => {
                     console.log(err);
                     return of({message: ''})
                 })
             );
         }),
-        map((response: {message: string, post: Post}) => {
-            if(response.message !== ''){
+        map((response: { message: string, post: Post }) => {
+            if (response.message !== '') {
                 console.log('Update Successful');
                 return new UpdatePostSuccess(response.post);
             } else {
@@ -88,15 +114,15 @@ export class PostsEffects implements OnInitEffects {
             return action.payload
         }),
         switchMap((id: string) => {
-            return this.http.delete<{message: string}>('http://localhost:3000/api/posts/' + id).pipe(
+            return this.http.delete<{ message: string }>('http://localhost:3000/api/posts/' + id).pipe(
                 catchError((err) => {
                     console.log(err);
                     return of({message: ''});
                 })
             );
         }),
-        tap((data: {message: string}) => {
-            if(data.message !== ''){
+        tap((data: { message: string }) => {
+            if (data.message !== '') {
                 console.log('Post Deleted');
             } else {
                 console.log('Post Not Deleted');
@@ -108,7 +134,7 @@ export class PostsEffects implements OnInitEffects {
     fetchPosts$ = this.actions$.pipe(
         ofType<FetchPosts>(PostsActionTypes.FetchPosts),
         tap(() => {
-           this.store.dispatch(new SetIsLoading(true));
+            this.store.dispatch(new SetIsLoading(true));
         }),
         switchMap(() => {
             return this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts').pipe(
@@ -118,15 +144,16 @@ export class PostsEffects implements OnInitEffects {
                 })
             );
         }),
-        map((postData: {message: string, posts: any}) => {
-            if(postData.posts !== null) {
+        map((postData: { message: string, posts: any }) => {
+            if (postData.posts !== null) {
                 return postData.posts.map((post) => {
                     return {
                         id: post._id,
                         title: post.title,
                         content: post.content,
                         timeCreated: post.timeCreated,
-                        updated: post.updated
+                        updated: post.updated != -1 ? post.updated : null,
+                        imagePath: post.imagePath
                     }
                 })
             } else {
@@ -134,7 +161,7 @@ export class PostsEffects implements OnInitEffects {
             }
         }),
         map((mappedPosts: Post[]) => {
-            if(mappedPosts.length > 0) {
+            if (mappedPosts.length > 0) {
                 return new SetPosts(mappedPosts)
             } else {
                 return new SetPosts([]);

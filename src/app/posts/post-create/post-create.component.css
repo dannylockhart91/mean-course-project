@@ -2,3 +2,29 @@ mat-form-field,
 textarea {
     width: 100%;
 }
+
+.file-upload input[type=file] {
+    visibility: hidden;
+}
+
+.image-preview {
+    width: 100%
+}
+.image-preview img {
+    border-radius: 3px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    margin: auto;
+    width: 50%;
+}
+
+.image-required {
+    color: red;
+    font: inherit;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+
+.post-form-buttons {
+    margin-top: 1rem;
+}

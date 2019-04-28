@@ -8,10 +8,15 @@
             <mat-expansion-panel-header>
                 {{post.title}}
             </mat-expansion-panel-header>
-            <p>{{post.content}}</p>
+            <hr>
+            <div class="post-content">
+                <img [src]="post.imagePath" [alt]="post.title" draggable="false">
+                <hr>
+                <p>{{post.content}}</p>
+            </div>
             <mat-action-row fxLayoutAlign="space-between center">
                 <p>Posted On: <strong>{{post.timeCreated | date: 'd/M/yy h:mm a'}}</strong></p>
-                <p *ngIf="post.updated !== null">Updated On: <strong>{{post.updated | date: 'd/M/yy h:mm a'}}</strong>
+                <p *ngIf="post.updated !== null && post.updated !== -1">Updated On: <strong>{{post.updated | date: 'd/M/yy h:mm a'}}</strong>
                 </p>
                 <div>
                     <button mat-icon-button>
