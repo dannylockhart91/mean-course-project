@@ -16,3 +16,4 @@ export const getPostsState = createFeatureSelector<PostsState>('posts');
 export const getPosts = createSelector(getPostsState, (state: PostsState) => state.posts);
 export const getCurrentEditingPost = createSelector(getPostsState, (state: PostsState) => state.currentEditingPost);
 export const getIsLoading = createSelector(getPostsState, (state: PostsState) => state.isLoading);
+

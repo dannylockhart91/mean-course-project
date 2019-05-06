@@ -2,7 +2,7 @@
     <button mat-raised-button color="primary" [routerLink]="'createPost'">Create New Post</button>
 </div>
 
-<div fxLayoutAlign="center center" *ngIf="!(isLoading$ | async)">
+<div fxLayout="column" fxLayoutAlign="center center" *ngIf="!(isLoading$ | async)">
     <mat-accordion multi="false" *ngIf="(posts$ | async)">
         <mat-expansion-panel *ngFor="let post of (posts$ | async)">
             <mat-expansion-panel-header>
@@ -31,6 +31,8 @@
             </mat-action-row>
         </mat-expansion-panel>
     </mat-accordion>
+    <mat-paginator [length]="totalPosts" [pageIndex]="currentPage" [pageSize]="postsPerPage" [pageSizeOptions]='[2, 5, 10, 20]'
+    (page)="onPageChange($event)"></mat-paginator>
 </div>
 <div *ngIf="isLoading$ | async" fxLayoutAlign="center">
     <mat-spinner></mat-spinner>

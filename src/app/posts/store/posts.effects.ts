@@ -133,11 +133,13 @@ export class PostsEffects implements OnInitEffects {
     @Effect()
     fetchPosts$ = this.actions$.pipe(
         ofType<FetchPosts>(PostsActionTypes.FetchPosts),
-        tap(() => {
+        map((action: FetchPosts) => {
             this.store.dispatch(new SetIsLoading(true));
+            return action.payload;
         }),
-        switchMap(() => {
-            return this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts').pipe(
+        switchMap((pageInfo: {pageSize: number, currentPage: number}) => {
+            const queryParams = `?pageSize=${pageInfo.pageSize}&page=${pageInfo.currentPage}`;
+            return this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts' + queryParams).pipe(
                 catchError((err) => {
                     console.log(err);
                     return of({message: '', posts: null})
@@ -170,7 +172,7 @@ export class PostsEffects implements OnInitEffects {
     );
 
     ngrxOnInitEffects(): Action {
-        return new FetchPosts();
+        return new FetchPosts({pageSize: 2, currentPage: 1});
     }
 
     constructor(private actions$: Actions, private http: HttpClient, private store: Store<fromApp.AppState>) {

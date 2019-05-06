@@ -18,7 +18,7 @@ export enum PostsActionTypes {
 export class AddPostRequest implements Action {
     readonly type = PostsActionTypes.AddPostRequest;
 
-    constructor(public payload: {post: Post, image?: File}) {
+    constructor(public payload: { post: Post, image?: File }) {
     }
 }
 
@@ -50,7 +50,7 @@ export class SetEditingPost implements Action {
 export class UpdatePostRequest implements Action {
     readonly type = PostsActionTypes.UpdatePostRequest;
 
-    constructor(public payload: {post: Post, image: File | string}) {
+    constructor(public payload: { post: Post, image: File | string }) {
     }
 }
 
@@ -67,6 +67,9 @@ export class UpdatePostFailed implements Action {
 
 export class FetchPosts implements Action {
     readonly type = PostsActionTypes.FetchPosts;
+
+    constructor(public payload: { pageSize: number, currentPage: number }) {
+    }
 }
 
 export class SetPosts implements Action {
