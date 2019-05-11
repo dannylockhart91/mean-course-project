@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 
 import {Action, Store} from "@ngrx/store";
 import {Actions, Effect, ofType, OnInitEffects} from "@ngrx/effects";
-import {catchError, map, switchMap, tap} from "rxjs/operators";
+import {catchError, map, mergeMap, switchMap, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 import {
@@ -139,40 +139,42 @@ export class PostsEffects implements OnInitEffects {
         }),
         switchMap((pageInfo: {pageSize: number, currentPage: number}) => {
             const queryParams = `?pageSize=${pageInfo.pageSize}&page=${pageInfo.currentPage}`;
-            return this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts' + queryParams).pipe(
+            return this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:3000/api/posts' + queryParams).pipe(
                 catchError((err) => {
                     console.log(err);
                     return of({message: '', posts: null})
                 })
             );
         }),
-        map((postData: { message: string, posts: any }) => {
+        map((postData: { message: string, posts: any, maxPosts: number }) => {
             if (postData.posts !== null) {
-                return postData.posts.map((post) => {
-                    return {
-                        id: post._id,
-                        title: post.title,
-                        content: post.content,
-                        timeCreated: post.timeCreated,
-                        updated: post.updated != -1 ? post.updated : null,
-                        imagePath: post.imagePath
-                    }
-                })
+                return {
+                    posts: postData.posts.map((post) => {
+                        return {
+                            id: post._id,
+                            title: post.title,
+                            content: post.content,
+                            timeCreated: post.timeCreated,
+                            updated: post.updated != -1 ? post.updated : null,
+                            imagePath: post.imagePath
+                        }
+                    }), maxPosts: postData.maxPosts
+                }
             } else {
                 return []
             }
         }),
-        map((mappedPosts: Post[]) => {
-            if (mappedPosts.length > 0) {
-                return new SetPosts(mappedPosts)
+        map((mappedPosts: {posts: Post[], maxPosts: number}) => {
+            if (mappedPosts.posts.length > 0) {
+                return new SetPosts({posts: mappedPosts.posts, maxPosts: mappedPosts.maxPosts});
             } else {
-                return new SetPosts([]);
+                return new SetPosts(null);
             }
         })
     );
 
     ngrxOnInitEffects(): Action {
-        return new FetchPosts({pageSize: 2, currentPage: 1});
+        return new FetchPosts({pageSize: 2, currentPage: 0});
     }
 
     constructor(private actions$: Actions, private http: HttpClient, private store: Store<fromApp.AppState>) {

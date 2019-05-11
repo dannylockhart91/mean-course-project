@@ -13,8 +13,11 @@ import {DeletePost, FetchPosts, SetEditingPost} from "../store/posts.actions";
     templateUrl: './post-list.component.html',
     styleUrls: ['./post-list.component.scss']
 })
-export class PostListComponent implements OnInit {
+export class PostListComponent implements OnInit, OnDestroy {
     posts$: Observable<Post[]>;
+    postPerPageSubscription: Subscription;
+    currentPageSubscription: Subscription;
+    totalPostsSubscription: Subscription;
 
     postsPerPage: number = 2;
     currentPage: number = 0;
@@ -27,6 +30,21 @@ export class PostListComponent implements OnInit {
     ngOnInit(): void {
         this.isLoading$ = this.store.pipe(select(fromApp.getIsLoading));
         this.posts$ = this.store.pipe(select(fromApp.getPosts));
+        this.postPerPageSubscription = this.store.pipe(select(fromApp.getPostPerPage)).subscribe(
+            ((data: number) => {
+                this.postsPerPage = data;
+            })
+        );
+        this.currentPageSubscription = this.store.pipe(select(fromApp.getCurrentPage)).subscribe(
+            ((data: number) => {
+                this.currentPage = data
+            })
+        );
+        this.totalPostsSubscription = this.store.pipe(select(fromApp.getTotalPosts)).subscribe(
+            ((totalNumOfPosts: number) => {
+                this.totalPosts = totalNumOfPosts;
+            })
+        );
     }
 
     /**
@@ -51,9 +69,18 @@ export class PostListComponent implements OnInit {
      * @param pageData The page change event
      */
     onPageChange(pageData: PageEvent) {
-        console.log(pageData);
-        this.currentPage = pageData.pageIndex + 1;
-        this.postsPerPage = pageData.pageSize;
-        this.store.dispatch(new FetchPosts({pageSize: this.postsPerPage, currentPage: this.currentPage}));
+        this.store.dispatch(new FetchPosts({pageSize: pageData.pageSize, currentPage: pageData.pageIndex}));
+    }
+
+    ngOnDestroy(): void {
+        if (this.postPerPageSubscription) {
+            this.postPerPageSubscription.unsubscribe();
+        }
+        if (this.currentPageSubscription) {
+            this.currentPageSubscription.unsubscribe();
+        }
+        if (this.totalPostsSubscription) {
+            this.totalPostsSubscription.unsubscribe();
+        }
     }
 }

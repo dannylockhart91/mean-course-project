@@ -4,13 +4,19 @@ import {Post} from "../post.model";
 export interface PostsState {
     posts: Post[],
     currentEditingPost: Post,
-    isLoading: boolean
+    isLoading: boolean,
+    totalPostCount: number,
+    postsPerPage: number,
+    currentPage: number
 }
 
 export const initialState: PostsState = {
     posts: [],
     currentEditingPost: null,
-    isLoading: false
+    isLoading: false,
+    totalPostCount: null,
+    postsPerPage: null,
+    currentPage: null
 };
 
 export function PostsReducer(state: PostsState = initialState, action: PostActions): PostsState {
@@ -62,12 +68,21 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
                 currentEditingPost: action.payload
             }
         }
+        case PostsActionTypes.FetchPosts: {
+            return {
+                ...state,
+                isLoading: true,
+                postsPerPage: action.payload.pageSize,
+                currentPage: action.payload.currentPage
+            }
+        }
         case PostsActionTypes.SetPosts: {
-            if (typeof action.payload !== 'undefined' && action.payload.length > 0) {
+            if (typeof action.payload !== 'undefined' && action.payload.posts.length > 0) {
                 return {
                     ...state,
                     isLoading: false,
-                    posts: action.payload
+                    posts: action.payload.posts,
+                    totalPostCount: action.payload.maxPosts
                 }
             } else {
                 return {

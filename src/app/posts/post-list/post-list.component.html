@@ -32,7 +32,7 @@
         </mat-expansion-panel>
     </mat-accordion>
     <mat-paginator [length]="totalPosts" [pageIndex]="currentPage" [pageSize]="postsPerPage" [pageSizeOptions]='[2, 5, 10, 20]'
-    (page)="onPageChange($event)"></mat-paginator>
+    (page)="onPageChange($event)" *ngIf="(posts$ | async).length > 0"></mat-paginator>
 </div>
 <div *ngIf="isLoading$ | async" fxLayoutAlign="center">
     <mat-spinner></mat-spinner>

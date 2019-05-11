@@ -75,7 +75,7 @@ export class FetchPosts implements Action {
 export class SetPosts implements Action {
     readonly type = PostsActionTypes.SetPosts;
 
-    constructor(public payload: Post[]) {
+    constructor(public payload: {posts: Post[], maxPosts: number}) {
     }
 }
 
