@@ -1,0 +1,33 @@
+.sign-in-container {
+    height: 50vh;
+    margin: 4rem auto auto auto;
+    width: 60%;
+
+    .title {
+        color: #3F51B5;
+        text-align: center;
+        text-decoration: underline;
+    }
+
+    form {
+        height: 100%;
+
+        .email-password-fields {
+            height: 50%;
+            width: 100%;
+
+            mat-form-field {
+                width: 80%;
+            }
+        }
+
+        .sign-in-button-container {
+            width: 100%;
+
+            button {
+                width: 20%
+            }
+        }
+
+    }
+}

@@ -1,0 +1,44 @@
+<mat-card class="sign-in-container" fxLayout="column" fxLayoutAlign="space-between">
+    <h1 class="title">Register</h1>
+    <form fxLayout="column" fxLayoutAlign="space-evenly center" (submit)="onRegister(form)" #form="ngForm">
+        <div fxLayout="column" fxLayoutAlign="space-evenly center" class="email-password-fields">
+            <mat-form-field>
+                <label>
+                    <input
+                        matInput
+                        type="email"
+                        name="email"
+                        #email="ngModel"
+                        required
+                        email
+                        ngModel
+                        placeholder="E-mail Address">
+                </label>
+                <mat-error *ngIf="email.invalid">Please enter a valid e-mail</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <label>
+                    <input
+                        matInput
+                        type="password"
+                        name="password"
+                        #password="ngModel"
+                        required
+                        minlength="3"
+                        ngModel
+                        placeholder="Password">
+                </label>
+                <mat-error *ngIf="password.invalid">Please enter a valid password</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="sign-in-button-container" fxLayoutAlign="center center">
+            <button
+                mat-raised-button
+                color="accent"
+                type="submit"
+                [disabled]="form.invalid">
+                Log-In
+            </button>
+        </div>
+    </form>
+</mat-card>
