@@ -2,6 +2,7 @@ const express = require('express'); // Holds EXPRESS app
 const path = require('path'); // Allows construction of paths
 const mongoose = require('mongoose'); // mongoose is a helper package for working with MongoDB
 const postRoutes = require('./routes/posts'); // Holds connection to router(for routes)
+const authRoutes = require('./routes/auth');
 
 const app = express(); // returns the express app by executing the express function
 
@@ -37,7 +38,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/posts', postRoutes); // Make sure express uses the routes in the routes folder/file
+// Make sure express uses the routes in the routes folder/file
+app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes);
 
 // Export the app to be able to use it with our node server
 // including all the middleware we write
