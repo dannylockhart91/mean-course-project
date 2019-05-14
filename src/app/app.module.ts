@@ -21,6 +21,7 @@ import {PostsComponent} from './posts/posts.component';
 import {PostCreateComponent} from './posts/post-create/post-create.component';
 import {PostListComponent} from "./posts/post-list/post-list.component";
 import {PostsEffects} from "./posts/store/posts.effects";
+import {AuthEffects} from "./auth/store/auth.effects";
 
 @NgModule({
     declarations: [
@@ -42,7 +43,7 @@ import {PostsEffects} from "./posts/store/posts.effects";
         MaterialModule,
         HttpClientModule,
         StoreModule.forRoot(reducers),
-        EffectsModule.forRoot([PostsEffects]),
+        EffectsModule.forRoot([PostsEffects, AuthEffects]),
         StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production})
     ],
     providers: [],

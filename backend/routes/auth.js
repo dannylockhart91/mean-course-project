@@ -5,7 +5,7 @@ const router = express.Router();
 const AuthModel = require('../models/auth');
 
 
-router.post("/signup", (req, req, next) => {
+router.post("/signup", (req, res, next) => {
     bcryptjs.hash(req.body.password, 10) // Hash the password
         .then(hash => {
             const user = new AuthModel({
@@ -19,9 +19,10 @@ router.post("/signup", (req, req, next) => {
                         data: result
                     })
                 })
-                .catch(err => {
+                .catch(error => {
                     res.status(500).json({
-                        error: err
+                        message: 'Failed to create user.',
+                        data: error
                     })
                 })
         })

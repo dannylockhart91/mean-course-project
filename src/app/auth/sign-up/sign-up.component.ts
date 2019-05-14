@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {NgForm} from "@angular/forms";
 
+import {Store} from "@ngrx/store";
+
+import * as fromAuth from '../../auth/store/auth.reducer'
+import {SignUpRequest} from "../store/auth.actions";
+
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -8,12 +13,12 @@ import {NgForm} from "@angular/forms";
 })
 export class SignUpComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store: Store<fromAuth.AuthState>) { }
 
   ngOnInit() {
   }
 
   onRegister(form: NgForm) {
-      console.log(form);
+      this.store.dispatch(new SignUpRequest({email: form.value.email, password: form.value.password}))
   }
 }

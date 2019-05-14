@@ -1,13 +1,18 @@
-import * as fromPosts from '../posts/store/posts.reducer'
 import {ActionReducerMap, createFeatureSelector, createSelector} from "@ngrx/store";
+
 import {PostsState} from "../posts/store/posts.reducer";
+import {AuthState} from "../auth/store/auth.reducer";
+import * as fromPosts from '../posts/store/posts.reducer';
+import * as fromAuth from '../auth/store/auth.reducer';
 
 export interface AppState {
-    posts: fromPosts.PostsState
+    posts: PostsState
+    auth: AuthState
 }
 
 export const reducers: ActionReducerMap<AppState> = {
-    posts: fromPosts.PostsReducer
+    posts: fromPosts.PostsReducer,
+    auth: fromAuth.AuthReducer
 };
 
 // Create feature state selectors to create state selectors

@@ -8,7 +8,8 @@ const app = express(); // returns the express app by executing the express funct
 
 // Create connection to database
 //IMPORTANT: MongoDB: danny - 7Fq8YvA2PntcSCss
-mongoose.connect('mongodb+srv://danny:7Fq8YvA2PntcSCss@cluster0-sls8z.mongodb.net/node-angular?retryWrites=true\n', {useNewUrlParser: true})
+mongoose.connect('mongodb+srv://danny:7Fq8YvA2PntcSCss@cluster0-sls8z.mongodb.net/node-angular?retryWrites=true\n',
+    {useNewUrlParser: true, useCreateIndex: true})
     .then(() => {
         console.log('Connected to Database')
     })
