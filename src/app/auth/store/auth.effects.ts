@@ -2,11 +2,9 @@ import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http"
 import {Injectable} from "@angular/core";
 
 import {Actions, Effect, ofType} from "@ngrx/effects";
-import {Store} from "@ngrx/store";
 import {catchError, map, switchMap} from "rxjs/operators";
 
-import * as fromAuth from '../../auth/store/auth.reducer'
-import {AuthActionTypes, SignUpFailure, SignUpRequest, SignUpSuccess} from "./auth.actions";
+import {AuthActionTypes, SignInRequest, SignUpFailure, SignUpRequest, SignUpSuccess} from "./auth.actions";
 import {AuthData} from "../auth-data.modle";
 import {of} from "rxjs";
 
@@ -38,6 +36,28 @@ export class AuthEffects {
                 console.log(result.message, result.data);
                 return new SignUpFailure();
             }
+        })
+    );
+
+    @Effect({dispatch: false})
+    signInRequest$ = this.actions$.pipe(
+        ofType<SignInRequest>(AuthActionTypes.SignInRequest),
+        map((action: SignInRequest) => {
+            return action.payload
+        }),
+        switchMap((data: AuthData) => {
+            const authData: AuthData = {
+                email: data.email,
+                password: data.password
+            };
+            return this.http.post('http://localhost:3000/api/auth/login', authData).pipe(
+                catchError((error) => {
+                    return of({message: error.message, data: error})
+                })
+            )
+        }),
+        map((data) => {
+            console.log(data);
         })
     );
 

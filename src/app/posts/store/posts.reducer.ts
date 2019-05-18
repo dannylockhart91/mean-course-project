@@ -1,7 +1,5 @@
 import {PostActions, PostsActionTypes} from "./posts.actions";
 import {Post} from "../post.model";
-import {createFeatureSelector, createSelector} from "@ngrx/store";
-import {getPostsState} from "../../store/app.reducers";
 
 export interface PostsState {
     posts: Post[],

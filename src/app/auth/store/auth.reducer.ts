@@ -1,5 +1,4 @@
 import {AuthActions, AuthActionTypes} from "./auth.actions";
-import {createFeatureSelector, createSelector} from "@ngrx/store";
 
 export interface AuthState {
     isLoading: boolean;
@@ -22,13 +21,11 @@ export function AuthReducer(state: AuthState = initialState, action: AuthActions
             return {
                 ...state,
                 isLoading: false,
-                isAuthenticated: true
             };
         case AuthActionTypes.SignUpFailure:
             return {
                 ...state,
                 isLoading: false,
-                isAuthenticated: false
             };
         default:
             return {
