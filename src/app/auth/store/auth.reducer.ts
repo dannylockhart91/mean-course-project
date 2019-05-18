@@ -1,4 +1,5 @@
 import {AuthActions, AuthActionTypes} from "./auth.actions";
+import {createFeatureSelector, createSelector} from "@ngrx/store";
 
 export interface AuthState {
     isLoading: boolean;
@@ -20,7 +21,14 @@ export function AuthReducer(state: AuthState = initialState, action: AuthActions
         case AuthActionTypes.SignUpSuccess:
             return {
                 ...state,
-                isLoading: false
+                isLoading: false,
+                isAuthenticated: true
+            };
+        case AuthActionTypes.SignUpFailure:
+            return {
+                ...state,
+                isLoading: false,
+                isAuthenticated: false
             };
         default:
             return {
@@ -28,3 +36,5 @@ export function AuthReducer(state: AuthState = initialState, action: AuthActions
             }
     }
 }
+
+export const getIsAuth = (state: AuthState) => state.isAuthenticated;

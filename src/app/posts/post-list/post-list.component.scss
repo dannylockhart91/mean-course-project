@@ -1,6 +1,8 @@
 :host {
     display: block;
-    margin-top: 1rem;
+    //margin-top: 1rem;
+    margin: 1rem auto 0 auto;
+    max-width: 1000px;
 }
 
 .create-post-button {

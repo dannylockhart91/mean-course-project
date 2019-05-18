@@ -17,11 +17,16 @@ export const reducers: ActionReducerMap<AppState> = {
 
 // Create feature state selectors to create state selectors
 export const getPostsState = createFeatureSelector<PostsState>('posts');
+export const getAuthState = createFeatureSelector<AuthState>('auth');
 
-export const getPosts = createSelector(getPostsState, (state: PostsState) => state.posts);
-export const getCurrentEditingPost = createSelector(getPostsState, (state: PostsState) => state.currentEditingPost);
-export const getPostPerPage = createSelector(getPostsState, (state: PostsState) => state.postsPerPage);
-export const getCurrentPage = createSelector(getPostsState, (state: PostsState) => state.currentPage);
-export const getTotalPosts = createSelector(getPostsState, (state: PostsState) => state.totalPostCount);
-export const getIsLoading = createSelector(getPostsState, (state: PostsState) => state.isLoading);
+// Auth state selectors
+export const getIsAuth = createSelector(getAuthState, fromAuth.getIsAuth);
+
+// Post state selectors
+export const getPosts = createSelector(getPostsState, fromPosts.getPosts);
+export const getCurrentEditingPost = createSelector(getPostsState, fromPosts.getCurrentEditingPost);
+export const getPostPerPage = createSelector(getPostsState, fromPosts.getPostsPerPage);
+export const getCurrentPage = createSelector(getPostsState, fromPosts.getCurrentPage);
+export const getTotalPosts = createSelector(getPostsState, fromPosts.getTotalPosts);
+export const getIsLoading = createSelector(getPostsState, fromPosts.getIsLoading);
 

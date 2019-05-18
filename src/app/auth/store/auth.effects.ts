@@ -24,9 +24,9 @@ export class AuthEffects {
                 email: data.email,
                 password: data.password
             };
-            return this.http.post<HttpResponse<{ message: string, data: string }> | HttpErrorResponse>('http://localhost:3000/api/auth/signup', authData).pipe(
-                catchError((error: HttpErrorResponse) => {
-                    return of({message: error.error.message, data: error})
+            return this.http.post<HttpResponse<{ message: string, data }> | HttpErrorResponse>('http://localhost:3000/api/auth/signup', authData).pipe(
+                catchError((error) => {
+                    return of({message: '', data: error})
                 })
             )
         }),
@@ -41,6 +41,6 @@ export class AuthEffects {
         })
     );
 
-    constructor(private actions$: Actions, private http: HttpClient, private store: Store<fromAuth.AuthState>) {
+    constructor(private actions$: Actions, private http: HttpClient) {
     }
 }

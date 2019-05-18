@@ -3,8 +3,8 @@ import {RouterModule} from "@angular/router";
 
 import {PostCreateComponent} from "./posts/post-create/post-create.component";
 import {PostListComponent} from "./posts/post-list/post-list.component";
-import {SignUpComponent} from "./Auth/sign-up/sign-up.component";
-import {SignInComponent} from "./Auth/sign-in/sign-in.component";
+import {SignUpComponent} from "./auth/sign-up/sign-up.component";
+import {SignInComponent} from "./auth/sign-in/sign-in.component";
 
 const routes = [
     {path: '', component: PostListComponent},

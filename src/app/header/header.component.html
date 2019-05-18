@@ -1,8 +1,8 @@
 <mat-toolbar color="primary" fxLayoutAlign="space-between center">
     <span><a routerLink="/">MyMessages</a></span>
     <mat-nav-list fxLayout="row">
-        <a mat-list-item routerLink="createPost">New Post</a>
-        <a mat-list-item routerLink="sign-in">Login</a>
-        <a mat-list-item routerLink="sign-up">Register</a>
+        <a mat-list-item routerLink="createPost" *ngIf="(isAuthenticated$ | async)">New Post</a>
+        <a mat-list-item routerLink="sign-in" *ngIf="!(isAuthenticated$ | async)">Login</a>
+        <a mat-list-item routerLink="sign-up" *ngIf="!(isAuthenticated$ | async)">Register</a>
     </mat-nav-list>
 </mat-toolbar>

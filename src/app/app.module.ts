@@ -14,14 +14,14 @@ import {environment} from '../environments/environment';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from "./app-routing.module";
 import {MaterialModule} from './material.module';
-import { SignUpComponent } from './Auth/sign-up/sign-up.component';
-import { SignInComponent } from './Auth/sign-in/sign-in.component';
 import {HeaderComponent} from "./header/header.component";
 import {PostsComponent} from './posts/posts.component';
 import {PostCreateComponent} from './posts/post-create/post-create.component';
 import {PostListComponent} from "./posts/post-list/post-list.component";
 import {PostsEffects} from "./posts/store/posts.effects";
 import {AuthEffects} from "./auth/store/auth.effects";
+import {SignInComponent} from "./auth/sign-in/sign-in.component";
+import {SignUpComponent} from "./auth/sign-up/sign-up.component";
 
 @NgModule({
     declarations: [
@@ -30,8 +30,8 @@ import {AuthEffects} from "./auth/store/auth.effects";
         PostCreateComponent,
         PostListComponent,
         HeaderComponent,
-        SignUpComponent,
-        SignInComponent
+        SignInComponent,
+        SignUpComponent
     ],
     imports: [
         BrowserModule,

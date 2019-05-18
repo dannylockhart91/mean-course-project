@@ -5,6 +5,7 @@ import {Store} from "@ngrx/store";
 
 import * as fromAuth from '../../auth/store/auth.reducer'
 import {SignUpRequest} from "../store/auth.actions";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-sign-up',
@@ -13,12 +14,14 @@ import {SignUpRequest} from "../store/auth.actions";
 })
 export class SignUpComponent implements OnInit {
 
-  constructor(private store: Store<fromAuth.AuthState>) { }
+  constructor(private store: Store<fromAuth.AuthState>, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
   }
 
   onRegister(form: NgForm) {
-      this.store.dispatch(new SignUpRequest({email: form.value.email, password: form.value.password}))
+      this.store.dispatch(new SignUpRequest({email: form.value.email, password: form.value.password}));
+      this.router.navigate(['../'], {relativeTo: this.route})
+          .then(null);
   }
 }

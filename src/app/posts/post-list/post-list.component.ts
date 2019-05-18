@@ -4,9 +4,10 @@ import {Router} from "@angular/router";
 import {select, Store} from "@ngrx/store";
 import {Observable, Subscription} from "rxjs";
 
-import * as fromApp from '../../store/app.reducers';
 import {Post} from "../post.model";
+
 import {DeletePost, FetchPosts, SetEditingPost} from "../store/posts.actions";
+import * as fromApp from '../../store/app.reducers';
 
 @Component({
     selector: 'app-post-list',

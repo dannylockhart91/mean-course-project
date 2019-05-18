@@ -1,5 +1,7 @@
 import {PostActions, PostsActionTypes} from "./posts.actions";
 import {Post} from "../post.model";
+import {createFeatureSelector, createSelector} from "@ngrx/store";
+import {getPostsState} from "../../store/app.reducers";
 
 export interface PostsState {
     posts: Post[],
@@ -104,4 +106,11 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
         }
     }
 }
+
+export const getPosts = (state: PostsState) => state.posts;
+export const getCurrentEditingPost = (state: PostsState) => state.currentEditingPost;
+export const getPostsPerPage = (state: PostsState) => state.postsPerPage;
+export const getCurrentPage = (state: PostsState) => state.currentPage;
+export const getTotalPosts = (state: PostsState) => state.totalPostCount;
+export const getIsLoading = (state: PostsState) => state.isLoading;
 
