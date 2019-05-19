@@ -32,7 +32,7 @@ app.use((req, res, next) => {
         "*");
     // Allow communication with headers from the below
     res.setHeader("Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept");
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     // Allow control from http words (get, delete, put etc)
     res.setHeader("Access-Control-Allow-Methods",
         "GET, POST, PATCH, DELETE, OPTIONS");

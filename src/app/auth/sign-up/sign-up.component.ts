@@ -21,7 +21,7 @@ export class SignUpComponent implements OnInit {
 
   onRegister(form: NgForm) {
       this.store.dispatch(new SignUpRequest({email: form.value.email, password: form.value.password}));
-      this.router.navigate(['../sign-in'], {relativeTo: this.route})
+      this.router.navigate(['../'], {relativeTo: this.route})
           .then(null);
   }
 }

@@ -4,5 +4,6 @@
         <a mat-list-item routerLink="createPost" *ngIf="(isAuthenticated$ | async)">New Post</a>
         <a mat-list-item routerLink="sign-in" *ngIf="!(isAuthenticated$ | async)">Login</a>
         <a mat-list-item routerLink="sign-up" *ngIf="!(isAuthenticated$ | async)">Register</a>
+        <a mat-list-item *ngIf="(isAuthenticated$ | async)" (click)="onLogout()">Logout</a>
     </mat-nav-list>
 </mat-toolbar>

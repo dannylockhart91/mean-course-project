@@ -1,6 +1,6 @@
 const express = require('express');
-const bcryptjs = require('bcryptjs'); // Holds bcryptjs package that aids in encrypting/hashing
-const jwt = require('jsonwebtoken');
+const bcryptjs = require('bcryptjs'); // Package used for hashing/encrypting/comparing passwords
+const jwt = require('jsonwebtoken'); // Package used for creating JWT
 const router = express.Router();
 
 const AuthModel = require('../models/auth');
@@ -34,18 +34,14 @@ router.post("/login", (req, res, next) => {
     AuthModel.findOne({email: req.body.email})
         .then(user => {
             if (!user) {
-                return res.status(401).json({
-                    message: 'Authentication Failed'
-                })
+                throw new Error('Email address not found.')
             }
             fetchedUser = user;
             return bcryptjs.compare(req.body.password, user.password);
         })
         .then(result => {
             if (!result) {
-                return res.status(401).json({
-                    message: 'Authentication Failed'
-                })
+                throw new Error('Invalid Password')
             }
             const token = jwt.sign(
                 {email: fetchedUser.email, userId: fetchedUser._id},

@@ -8,6 +8,7 @@ import {Post} from "../post.model";
 
 import {DeletePost, FetchPosts, SetEditingPost} from "../store/posts.actions";
 import * as fromApp from '../../store/app.reducers';
+import {map} from "rxjs/operators";
 
 @Component({
     selector: 'app-post-list',
@@ -16,6 +17,7 @@ import * as fromApp from '../../store/app.reducers';
 })
 export class PostListComponent implements OnInit, OnDestroy {
     posts$: Observable<Post[]>;
+    isAuthenticated$: Observable<boolean>;
     postPerPageSubscription: Subscription;
     currentPageSubscription: Subscription;
     totalPostsSubscription: Subscription;
@@ -44,6 +46,12 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.totalPostsSubscription = this.store.pipe(select(fromApp.getTotalPosts)).subscribe(
             ((totalNumOfPosts: number) => {
                 this.totalPosts = totalNumOfPosts;
+            })
+        );
+        this.isAuthenticated$ = this.store.pipe(select(fromApp.getIsAuth)).pipe(
+            map((data) => {
+                console.log(data);
+                return data;
             })
         );
     }

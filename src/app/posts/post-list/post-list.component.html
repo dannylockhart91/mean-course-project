@@ -1,5 +1,9 @@
 <div class="create-post-button">
-    <button mat-raised-button color="primary" [routerLink]="'createPost'">Create New Post</button>
+    <button mat-raised-button color="primary"
+            [routerLink]="'createPost'"
+            [disabled]="!(isAuthenticated$ | async)">
+        Create New Post
+    </button>
 </div>
 
 <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!(isLoading$ | async)">
@@ -18,7 +22,7 @@
                 <p>Posted On: <strong>{{post.timeCreated | date: 'd/M/yy h:mm a'}}</strong></p>
                 <p *ngIf="post.updated !== null && post.updated !== -1">Updated On: <strong>{{post.updated | date: 'd/M/yy h:mm a'}}</strong>
                 </p>
-                <div>
+                <div *ngIf="(isAuthenticated$ | async)">
                     <button mat-icon-button>
                         <mat-icon color="primary" matTooltip="Edit Post" routerLink="/edit/{{post.id}}"
                                   (click)="onEditPost(post)">create
