@@ -1,8 +1,9 @@
 import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 
-import {Actions, Effect, ofType, OnInitEffects} from "@ngrx/effects";
-import {catchError, map, switchMap} from "rxjs/operators";
+import {Actions, Effect, ofType} from "@ngrx/effects";
+import {catchError, map, switchMap, withLatestFrom} from "rxjs/operators";
+
 
 import {
     AuthActionTypes,
@@ -16,6 +17,9 @@ import {
 import {AuthData} from "../auth-data.modle";
 import {of} from "rxjs";
 import {Router} from "@angular/router";
+import {select, Store} from "@ngrx/store";
+
+import * as fromApp from '../../store/app.reducers';
 
 @Injectable()
 export class AuthEffects {
@@ -59,23 +63,22 @@ export class AuthEffects {
                 email: data.email,
                 password: data.password
             };
-            return this.http.post<{ message: string, token?: string }>('http://localhost:3000/api/auth/login', authData).pipe(
+            return this.http.post<{ message: string, token?: string, expiresIn?: number }>('http://localhost:3000/api/auth/login', authData).pipe(
                 catchError((error) => {
                     return of({message: error.message, error: error})
                 })
             )
         }),
-        map((response: { message: string, token?: string, error?: any }) => {
+        map((response: { message: string, token?: string, expiresIn?: number, error?: any }) => {
             if (response.error) {
                 return new SignInFailure();
             } else {
                 this.router.navigateByUrl('/').then();
-                localStorage.setItem('token', response.token);
-                return new SignInSuccess(response.token);
+                return new SignInSuccess({token: response.token, expiresIn: response.expiresIn});
             }
         })
     );
 
-    constructor(private actions$: Actions, private http: HttpClient, private router: Router) {
+    constructor(private actions$: Actions, private http: HttpClient, private store: Store<fromApp.AppState>, private router: Router) {
     }
 }

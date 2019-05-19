@@ -4,12 +4,14 @@ export interface AuthState {
     isLoading: boolean;
     isAuthenticated: boolean;
     token: string;
+    tokenExpiration: Date;
 }
 
 export const initialState: AuthState = {
     isLoading: false,
     isAuthenticated: false,
-    token: null
+    token: null,
+    tokenExpiration: null
 };
 
 export function AuthReducer(state: AuthState = initialState, action: AuthActions): AuthState {
@@ -21,11 +23,14 @@ export function AuthReducer(state: AuthState = initialState, action: AuthActions
             }
         }
         case AuthActionTypes.SignInSuccess: {
+            const date = new Date();
+            const tokenExpireDate = new Date(date.getTime() + action.payload.expiresIn * 1000);
             return {
                 ...state,
                 isLoading: false,
                 isAuthenticated: true,
-                token: action.payload
+                token: action.payload.token,
+                tokenExpiration: tokenExpireDate
             }
         }
         case AuthActionTypes.SignInFailure: {

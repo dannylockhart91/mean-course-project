@@ -20,7 +20,7 @@ export class SignInRequest implements Action {
 export class SignInSuccess implements Action {
     readonly type = AuthActionTypes.SignInSuccess;
 
-    constructor(public payload: string) {
+    constructor(public payload: {token: string, expiresIn: number}) {
     }
 }
 
