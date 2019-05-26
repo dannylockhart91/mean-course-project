@@ -5,7 +5,8 @@ const postSchema = mongoose.Schema({
     content: {type: String, required: true},
     timeCreated: {type: Number},
     updated: {type: Number},
-    imagePath: {type: String, required: true}
+    imagePath: {type: String, required: true},
+    creator: {type: mongoose.Schema.Types.ObjectId, ref: 'Auth', required: true}
 });
 
 module.exports = mongoose.model('Post', postSchema);

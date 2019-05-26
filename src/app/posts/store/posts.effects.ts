@@ -1,16 +1,16 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 
 import {Action, Store} from "@ngrx/store";
 import {Actions, Effect, ofType, OnInitEffects} from "@ngrx/effects";
-import {catchError, map, mergeMap, switchMap, tap} from "rxjs/operators";
+import {catchError, map, switchMap} from "rxjs/operators";
 import {of} from "rxjs";
 
 import {
     AddPostFailed,
     AddPostRequest,
     AddPostSuccess,
-    DeletePost,
+    DeletePostRequest, DeletePostFailed, DeletePostSuccess,
     FetchPosts,
     PostsActionTypes, SetIsLoading,
     SetPosts, UpdatePostFailed,
@@ -18,6 +18,7 @@ import {
 } from "./posts.actions";
 import {Post} from "../post.model";
 import * as fromApp from "../../store/app.reducers";
+import {UiService} from "../../shared/ui.service";
 
 @Injectable()
 export class PostsEffects implements OnInitEffects {
@@ -39,6 +40,7 @@ export class PostsEffects implements OnInitEffects {
             return this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData).pipe(
                 catchError((err) => {
                     console.log(err);
+                    this.uiService.showSnackBarError('Error Adding Post', 3500);
                     return of({message: '', post: null})
                 })
             );
@@ -53,10 +55,9 @@ export class PostsEffects implements OnInitEffects {
                     updated: null,
                     imagePath: data.post.imagePath
                 };
-                console.log('Post Added');
+                this.uiService.showSnackBarSuccess('Post Added Successfully', 5000);
                 return new AddPostSuccess(post);
             } else {
-                console.log('Error Adding Post');
                 return new AddPostFailed();
             }
         })
@@ -92,40 +93,42 @@ export class PostsEffects implements OnInitEffects {
             return this.http.patch<{ message: string, post: Post }>('http://localhost:3000/api/posts/' + data.post.id, postData).pipe(
                 catchError((err) => {
                     console.log(err);
+                    this.uiService.showSnackBarError('Error Updating Post', 3500);
                     return of({message: ''})
                 })
             );
         }),
         map((response: { message: string, post: Post }) => {
-            if (response.message !== '') {
-                console.log('Update Successful');
+            if (response.message !== '' && response.post !== null) {
+                this.uiService.showSnackBarSuccess('Post Updated Successfully', 5000);
                 return new UpdatePostSuccess(response.post);
             } else {
-                console.log('Update Not Successful');
                 return new UpdatePostFailed();
             }
         })
     );
 
-    @Effect({dispatch: false})
+    @Effect()
     deletePost$ = this.actions$.pipe(
-        ofType<DeletePost>(PostsActionTypes.DeletePost),
-        map((action: DeletePost) => {
+        ofType<DeletePostRequest>(PostsActionTypes.DeletePostRequest),
+        map((action: DeletePostRequest) => {
             return action.payload
         }),
         switchMap((id: string) => {
-            return this.http.delete<{ message: string }>('http://localhost:3000/api/posts/' + id).pipe(
-                catchError((err) => {
+            return this.http.delete<{ message: string, postId: string }>('http://localhost:3000/api/posts/' + id).pipe(
+                catchError((err: HttpErrorResponse) => {
                     console.log(err);
+                    this.uiService.showSnackBarError(`Error Deleting Post - ${err.statusText}`, 5000);
                     return of({message: ''});
                 })
             );
         }),
-        tap((data: { message: string }) => {
+        map((data: { message: string, postId: string }) => {
             if (data.message !== '') {
-                console.log('Post Deleted');
+                this.uiService.showSnackBarSuccess('Post Deleted Successfully', 5000);
+                return new DeletePostSuccess(data.postId);
             } else {
-                console.log('Post Not Deleted');
+                return new DeletePostFailed();
             }
         })
     );
@@ -137,11 +140,12 @@ export class PostsEffects implements OnInitEffects {
             this.store.dispatch(new SetIsLoading(true));
             return action.payload;
         }),
-        switchMap((pageInfo: {pageSize: number, currentPage: number}) => {
+        switchMap((pageInfo: { pageSize: number, currentPage: number }) => {
             const queryParams = `?pageSize=${pageInfo.pageSize}&page=${pageInfo.currentPage}`;
             return this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:3000/api/posts' + queryParams).pipe(
                 catchError((err) => {
                     console.log(err);
+                    this.uiService.showSnackBarError('Error Fetching Posts', 3500);
                     return of({message: '', posts: null})
                 })
             );
@@ -156,7 +160,8 @@ export class PostsEffects implements OnInitEffects {
                             content: post.content,
                             timeCreated: post.timeCreated,
                             updated: post.updated != -1 ? post.updated : null,
-                            imagePath: post.imagePath
+                            imagePath: post.imagePath,
+                            creator: post.creator
                         }
                     }), maxPosts: postData.maxPosts
                 }
@@ -164,7 +169,7 @@ export class PostsEffects implements OnInitEffects {
                 return []
             }
         }),
-        map((mappedPosts: {posts: Post[], maxPosts: number}) => {
+        map((mappedPosts: { posts: Post[], maxPosts: number }) => {
             if (mappedPosts.posts.length > 0) {
                 return new SetPosts({posts: mappedPosts.posts, maxPosts: mappedPosts.maxPosts});
             } else {
@@ -177,6 +182,9 @@ export class PostsEffects implements OnInitEffects {
         return new FetchPosts({pageSize: 2, currentPage: 0});
     }
 
-    constructor(private actions$: Actions, private http: HttpClient, private store: Store<fromApp.AppState>) {
+    constructor(private actions$: Actions,
+                private uiService: UiService,
+                private http: HttpClient,
+                private store: Store<fromApp.AppState>) {
     }
 }

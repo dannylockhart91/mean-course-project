@@ -37,7 +37,8 @@ router.post(
         content: req.body.content,
         timeCreated: parseInt(req.body.timeCreated),
         updated: parseInt(req.body.updated),
-        imagePath: url + '/images/' + req.file.filename
+        imagePath: url + '/images/' + req.file.filename,
+        creator: req.userData.userId // Information returned from the checkAuth middleware holds the token information
     });
     post.save().then((result) => {
         res.status(201).json({
@@ -76,7 +77,7 @@ router.get(
 
 router.patch(
     '/:id',
-    checkAuth, //Checks the token
+    checkAuth, //Checks the token and returns data inside
     multer({storage: storage}).single('image'),
     (req, res, next) => {
     let imagePath = req.body.imagePath;
@@ -88,20 +89,27 @@ router.patch(
         ...req.body,
         imagePath: imagePath
     });
-    PostModel.updateOne({_id: req.params.id}, post)
-        .then(() => {
-            const newPost = {
-                id: post._id,
-                title: post.title,
-                content: post.content,
-                timeCreated: post.timeCreated,
-                updated: post.updated,
-                imagePath: post.imagePath
-            };
-            res.status(200).json({
-                message: 'Update Successful',
-                post: newPost
-            })
+    PostModel.updateOne({_id: req.params.id, creator: req.userData.userId}, post)
+        .then((result) => {
+            if(result.nModified > 0) {
+                const newPost = {
+                    id: post._id,
+                    title: post.title,
+                    content: post.content,
+                    timeCreated: post.timeCreated,
+                    updated: post.updated,
+                    imagePath: post.imagePath
+                };
+                res.status(200).json({
+                    message: 'Update Successful',
+                    post: newPost
+                })
+            } else {
+                res.status(401).json({
+                    message: 'Not Authorised',
+                    post: null
+                })
+            }
         })
 });
 
@@ -109,12 +117,18 @@ router.delete(
     '/:id',
     checkAuth,
     (req, res, next) => {
-    PostModel.deleteOne({_id: req.params.id})
+    PostModel.deleteOne({_id: req.params.id, creator: req.userData.userId})
         .then((result) => {
-            console.log(result);
-            res.status(200).json({
-                message: 'Post Deleted'
-            });
+            if(result.n > 0) {
+                res.status(200).json({
+                    message: 'Post Deleted',
+                    postId: req.params.id
+                });
+            } else {
+                res.status(401).json({
+                    message: 'Not Authorized'
+                })
+            }
         });
 });
 

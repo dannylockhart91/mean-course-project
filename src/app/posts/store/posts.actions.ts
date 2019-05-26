@@ -5,7 +5,9 @@ export enum PostsActionTypes {
     AddPostRequest = '[Posts] Add Post Request',
     AddPostSuccess = '[Posts] Add Post Success',
     AddPostFailed = '[Posts] Add Post Failed',
-    DeletePost = '[Posts] Delete Post',
+    DeletePostRequest = '[Posts] Delete Post Request',
+    DeletePostSuccess = '[Posts] Delete Post Success',
+    DeletePostFailed = '[Posts] Delete Post Failed',
     SetEditingPost = '[Posts] Set Editing Post',
     UpdatePostRequest = '[Posts] Update Post Request',
     UpdatePostSuccess = '[Posts] Update Post Success',
@@ -33,11 +35,21 @@ export class AddPostFailed implements Action {
     readonly type = PostsActionTypes.AddPostFailed;
 }
 
-export class DeletePost implements Action {
-    readonly type = PostsActionTypes.DeletePost;
+export class DeletePostRequest implements Action {
+    readonly type = PostsActionTypes.DeletePostRequest;
 
     constructor(public payload: string) {
     }
+}
+export class DeletePostSuccess implements Action {
+    readonly type = PostsActionTypes.DeletePostSuccess;
+
+    constructor(public payload: string){
+    }
+}
+
+export class DeletePostFailed implements Action {
+    readonly type = PostsActionTypes.DeletePostFailed;
 }
 
 export class SetEditingPost implements Action {
@@ -89,7 +101,9 @@ export class SetIsLoading implements Action {
 export type PostActions =
     AddPostRequest |
     AddPostSuccess |
-    DeletePost |
+    DeletePostRequest |
+    DeletePostSuccess |
+    DeletePostFailed |
     SetEditingPost |
     UpdatePostRequest |
     UpdatePostSuccess |

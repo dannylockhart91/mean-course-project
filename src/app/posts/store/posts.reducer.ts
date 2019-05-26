@@ -29,11 +29,12 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
             }
         }
         case PostsActionTypes.UpdatePostSuccess: {
-            console.log(action.payload);
             let oldPost;
             state.posts.forEach((post) => {
-                if (post.id === action.payload.id) {
-                    oldPost = post;
+                if(post) {
+                    if (post.id === action.payload.id) {
+                        oldPost = post;
+                    }
                 }
             });
             if (oldPost) {
@@ -52,7 +53,13 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
                 }
             }
         }
-        case PostsActionTypes.DeletePost: {
+        case PostsActionTypes.UpdatePostFailed: {
+            return {
+                ...state,
+                isLoading: false
+            }
+        }
+        case PostsActionTypes.DeletePostSuccess: {
             let posts = state.posts;
             let newPosts = posts.filter((post) => {
                 return post.id != action.payload
@@ -77,7 +84,7 @@ export function PostsReducer(state: PostsState = initialState, action: PostActio
             }
         }
         case PostsActionTypes.SetPosts: {
-            if (typeof action.payload !== 'undefined' && action.payload.posts.length > 0) {
+            if (typeof action.payload !== 'undefined' && action.payload  !== null && action.payload.posts.length > 0) {
                 return {
                     ...state,
                     isLoading: false,

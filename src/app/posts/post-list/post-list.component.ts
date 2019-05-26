@@ -6,7 +6,7 @@ import {Observable, Subscription} from "rxjs";
 
 import {Post} from "../post.model";
 
-import {DeletePost, FetchPosts, SetEditingPost} from "../store/posts.actions";
+import {DeletePostRequest, FetchPosts, SetEditingPost} from "../store/posts.actions";
 import * as fromApp from '../../store/app.reducers';
 import {map} from "rxjs/operators";
 
@@ -50,7 +50,6 @@ export class PostListComponent implements OnInit, OnDestroy {
         );
         this.isAuthenticated$ = this.store.pipe(select(fromApp.getIsAuth)).pipe(
             map((data) => {
-                console.log(data);
                 return data;
             })
         );
@@ -69,7 +68,7 @@ export class PostListComponent implements OnInit, OnDestroy {
      * @param post The post that is linked to the delete button pressed
      */
     onDeletePost(post: Post) {
-        this.store.dispatch(new DeletePost(post.id));
+        this.store.dispatch(new DeletePostRequest(post.id));
     }
 
     /**
