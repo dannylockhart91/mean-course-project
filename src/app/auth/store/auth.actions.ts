@@ -7,6 +7,7 @@ export enum AuthActionTypes {
     SignUpRequest = '[Auth] Sign Up Request',
     SignUpSuccess = '[Auth] Sign Up Success',
     SignUpFailure = '[Auth] Sign Up Failure',
+    SetIsAuthenticated = '[Auth] Set isAuthenticated',
     Logout = '[Auth] Logout'
 }
 
@@ -20,7 +21,7 @@ export class SignInRequest implements Action {
 export class SignInSuccess implements Action {
     readonly type = AuthActionTypes.SignInSuccess;
 
-    constructor(public payload: {token: string, expiresIn: number}) {
+    constructor(public payload: { token: string, userId: string, expiresIn: number }) {
     }
 }
 
@@ -43,6 +44,13 @@ export class SignUpFailure implements Action {
     readonly type = AuthActionTypes.SignUpFailure;
 }
 
+export class SetIsAuthenticated implements Action {
+    readonly type = AuthActionTypes.SetIsAuthenticated;
+
+    constructor(public payload: {isAuth: boolean, token: string}) {
+    }
+}
+
 export class Logout implements Action {
     readonly type = AuthActionTypes.Logout;
 }
@@ -54,4 +62,5 @@ export type AuthActions =
     SignUpRequest |
     SignUpSuccess |
     SignUpFailure |
+    SetIsAuthenticated |
     Logout;

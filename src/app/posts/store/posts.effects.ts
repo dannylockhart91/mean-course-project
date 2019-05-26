@@ -6,6 +6,8 @@ import {Actions, Effect, ofType, OnInitEffects} from "@ngrx/effects";
 import {catchError, map, switchMap} from "rxjs/operators";
 import {of} from "rxjs";
 
+import {environment} from "../../../environments/environment";
+
 import {
     AddPostFailed,
     AddPostRequest,
@@ -37,7 +39,7 @@ export class PostsEffects implements OnInitEffects {
             postData.append('timeCreated', data.post.timeCreated.toString());
             postData.append('updated', (data.post.updated | -1).toString());
             postData.append('image', data.image, data.post.title);
-            return this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData).pipe(
+            return this.http.post<{ message: string, post: Post }>(environment.apiURL + '/posts', postData).pipe(
                 catchError((err) => {
                     console.log(err);
                     this.uiService.showSnackBarError('Error Adding Post', 3500);
@@ -53,7 +55,8 @@ export class PostsEffects implements OnInitEffects {
                     content: data.post.content,
                     timeCreated: data.post.timeCreated,
                     updated: null,
-                    imagePath: data.post.imagePath
+                    imagePath: data.post.imagePath,
+                    creator: data.post.creator
                 };
                 this.uiService.showSnackBarSuccess('Post Added Successfully', 5000);
                 return new AddPostSuccess(post);
@@ -90,7 +93,7 @@ export class PostsEffects implements OnInitEffects {
                     imagePath: data.image
                 };
             }
-            return this.http.patch<{ message: string, post: Post }>('http://localhost:3000/api/posts/' + data.post.id, postData).pipe(
+            return this.http.patch<{ message: string, post: Post }>(environment.apiURL + '/posts/' + data.post.id, postData).pipe(
                 catchError((err) => {
                     console.log(err);
                     this.uiService.showSnackBarError('Error Updating Post', 3500);
@@ -115,7 +118,7 @@ export class PostsEffects implements OnInitEffects {
             return action.payload
         }),
         switchMap((id: string) => {
-            return this.http.delete<{ message: string, postId: string }>('http://localhost:3000/api/posts/' + id).pipe(
+            return this.http.delete<{ message: string, postId: string }>(environment.apiURL + '/posts/' + id).pipe(
                 catchError((err: HttpErrorResponse) => {
                     console.log(err);
                     this.uiService.showSnackBarError(`Error Deleting Post - ${err.statusText}`, 5000);
@@ -142,7 +145,7 @@ export class PostsEffects implements OnInitEffects {
         }),
         switchMap((pageInfo: { pageSize: number, currentPage: number }) => {
             const queryParams = `?pageSize=${pageInfo.pageSize}&page=${pageInfo.currentPage}`;
-            return this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:3000/api/posts' + queryParams).pipe(
+            return this.http.get<{ message: string, posts: any, maxPosts: number }>(environment.apiURL + '/posts' + queryParams).pipe(
                 catchError((err) => {
                     console.log(err);
                     this.uiService.showSnackBarError('Error Fetching Posts', 3500);

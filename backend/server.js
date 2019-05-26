@@ -4,8 +4,8 @@
 */
 const http = require("http");
 const debug = require("debug")("node-angular");
-const app = require("./backend/app");
-
+const app = require("./app");
+const dotenv = require('dotenv').config();
 
 // Function to make sure that the port we receive for setting
 // this server up is valid

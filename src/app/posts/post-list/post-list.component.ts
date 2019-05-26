@@ -18,6 +18,7 @@ import {map} from "rxjs/operators";
 export class PostListComponent implements OnInit, OnDestroy {
     posts$: Observable<Post[]>;
     isAuthenticated$: Observable<boolean>;
+    userId$: Observable<string>;
     postPerPageSubscription: Subscription;
     currentPageSubscription: Subscription;
     totalPostsSubscription: Subscription;
@@ -48,11 +49,8 @@ export class PostListComponent implements OnInit, OnDestroy {
                 this.totalPosts = totalNumOfPosts;
             })
         );
-        this.isAuthenticated$ = this.store.pipe(select(fromApp.getIsAuth)).pipe(
-            map((data) => {
-                return data;
-            })
-        );
+        this.isAuthenticated$ = this.store.pipe(select(fromApp.getIsAuth));
+        this.userId$ = this.store.pipe(select(fromApp.getUserId));
     }
 
     /**

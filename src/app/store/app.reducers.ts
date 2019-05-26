@@ -22,6 +22,7 @@ export const getAuthState = createFeatureSelector<AuthState>('auth');
 // Auth state selectors
 export const getIsAuth = createSelector(getAuthState, fromAuth.getIsAuth);
 export const getAuthToken = createSelector(getAuthState, fromAuth.getAuthToken);
+export const getUserId = createSelector(getAuthState, fromAuth.getUserId);
 
 // Post state selectors
 export const getPosts = createSelector(getPostsState, fromPosts.getPosts);

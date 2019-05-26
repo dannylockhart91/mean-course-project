@@ -2,12 +2,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {select, Store} from "@ngrx/store";
-import {Subscription} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 
 import {AddPostRequest, SetEditingPost, UpdatePostRequest} from "../store/posts.actions";
 import * as fromApp from '../../store/app.reducers';
 import {Post} from "../post.model";
 import {mimeType} from './mime-type.validator';
+import {map} from "rxjs/operators";
 
 @Component({
     selector: 'app-post-create',
@@ -16,7 +17,10 @@ import {mimeType} from './mime-type.validator';
 })
 export class PostCreateComponent implements OnInit, OnDestroy {
     isEditing$: Subscription;
+    userId$: Observable<string>;
+
     editingPost: Post = null;
+    userId: string;
     form: FormGroup;
     imagePreview: string;
 
@@ -50,6 +54,12 @@ export class PostCreateComponent implements OnInit, OnDestroy {
                 }
             }
         );
+        this.userId$ = this.store.pipe(select(fromApp.getUserId)).pipe(
+            map((data) => {
+                this.userId = data;
+                return data;
+            })
+        )
     }
 
     onSavePost() {
@@ -60,7 +70,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
                 content: this.form.value.postContent,
                 timeCreated: Date.now(),
                 updated: null,
-                imagePath: null
+                imagePath: null,
+                creator: this.userId
             };
             this.store.dispatch(new AddPostRequest({post: post, image: this.form.value.postImage}))
         } else {
@@ -70,7 +81,8 @@ export class PostCreateComponent implements OnInit, OnDestroy {
                 content: this.form.value.postContent,
                 timeCreated: this.editingPost.timeCreated,
                 updated: Date.now(),
-                imagePath: this.editingPost.imagePath
+                imagePath: this.editingPost.imagePath,
+                creator: this.editingPost.creator
             };
             this.store.dispatch(new UpdatePostRequest({post: post, image: this.form.value.postImage}))
         }

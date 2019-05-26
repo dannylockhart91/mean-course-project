@@ -5,13 +5,15 @@ export interface AuthState {
     isAuthenticated: boolean;
     token: string;
     tokenExpiration: Date;
+    userId: string;
 }
 
 export const initialState: AuthState = {
     isLoading: false,
     isAuthenticated: false,
     token: null,
-    tokenExpiration: null
+    tokenExpiration: null,
+    userId: null
 };
 
 export function AuthReducer(state: AuthState = initialState, action: AuthActions): AuthState {
@@ -30,7 +32,8 @@ export function AuthReducer(state: AuthState = initialState, action: AuthActions
                 isLoading: false,
                 isAuthenticated: true,
                 token: action.payload.token,
-                tokenExpiration: tokenExpireDate
+                tokenExpiration: tokenExpireDate,
+                userId: action.payload.userId
             }
         }
         case AuthActionTypes.SignInFailure: {
@@ -55,11 +58,19 @@ export function AuthReducer(state: AuthState = initialState, action: AuthActions
                 ...state,
                 isLoading: false,
             };
+        case AuthActionTypes.SetIsAuthenticated:
+            return {
+                ...state,
+                isAuthenticated: action.payload.isAuth,
+                token: action.payload.token
+            };
         case AuthActionTypes.Logout:
             return {
                 ...state,
                 isAuthenticated: false,
-                token: null
+                token: null,
+                tokenExpiration: null,
+                userId: null
             };
         default:
             return {
@@ -71,3 +82,4 @@ export function AuthReducer(state: AuthState = initialState, action: AuthActions
 export const getIsAuth = (state: AuthState) => state.isAuthenticated;
 export const getAuthToken = (state: AuthState) => state.token;
 export const getIsLoading = (state: AuthState) => state.isLoading;
+export const getUserId = (state: AuthState) => state.userId;

@@ -3,12 +3,14 @@ const path = require('path'); // Allows construction of paths
 const mongoose = require('mongoose'); // mongoose is a helper package for working with MongoDB
 const postRoutes = require('./routes/posts'); // Holds connection to router(for routes)
 const authRoutes = require('./routes/auth');
+const dotenv = require('dotenv').config();
 
 const app = express(); // returns the express app by executing the express function
 
+
 // Create connection to database
 //IMPORTANT: MongoDB: danny - 7Fq8YvA2PntcSCss
-mongoose.connect('mongodb+srv://danny:7Fq8YvA2PntcSCss@cluster0-sls8z.mongodb.net/node-angular?retryWrites=true\n',
+mongoose.connect('mongodb+srv://danny:' + process.env.MONGO_ATLAS_PW + '@cluster0-sls8z.mongodb.net/node-angular?retryWrites=true\n',
     {useNewUrlParser: true, useCreateIndex: true})
     .then(() => {
         console.log('Connected to Database')

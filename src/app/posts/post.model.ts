@@ -5,4 +5,5 @@ export interface Post {
     timeCreated: number;
     updated: number;
     imagePath: string;
+    creator: string;
 }
