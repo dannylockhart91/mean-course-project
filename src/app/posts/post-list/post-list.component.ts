@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {PageEvent} from "@angular/material";
+import {PageEvent} from "@angular/material/paginator";
 import {Router} from "@angular/router";
 import {select, Store} from "@ngrx/store";
 import {Observable, Subscription} from "rxjs";
@@ -8,7 +8,6 @@ import {Post} from "../post.model";
 
 import {DeletePostRequest, FetchPosts, SetEditingPost} from "../store/posts.actions";
 import * as fromApp from '../../store/app.reducers';
-import {map} from "rxjs/operators";
 
 @Component({
     selector: 'app-post-list',
